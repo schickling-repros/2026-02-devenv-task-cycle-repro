@@ -2,11 +2,9 @@
 
 {
   tasks = {
-    # This intentionally causes shell entry to re-run itself through the git-hooks
-    # installation task, producing a runaway process chain.
     "devenv:git-hooks:install" = {
       after = [ "setup:pre:hooks" ];
-      exec = "echo entering-hook-install; devenv shell -c true";
+      exec = "echo entering-hook-install; devenv tasks run setup:pre:hooks --no-tui --mode before";
     };
 
     "setup:pre:hooks" = {
