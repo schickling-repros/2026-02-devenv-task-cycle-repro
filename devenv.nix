@@ -1,17 +1,17 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
-  packages = [ pkgs.git ];
-
   tasks = {
-    "setup:pre:hooks" = {
-      before = ["devenv:git-hooks:install"];
-      exec = "echo 'running setup:pre:hooks'";
+    # This intentionally causes shell entry to re-run itself through the git-hooks
+    # installation task, producing a runaway process chain.
+    "devenv:git-hooks:install" = {
+      after = [ "setup:pre:hooks" ];
+      exec = "echo entering-hook-install; devenv shell -c true";
     };
 
-    "devenv:git-hooks:install" = {
-      before = ["setup:pre:hooks"];
-      exec = "echo 'running devenv:git-hooks:install'";
+    "setup:pre:hooks" = {
+      before = [ "devenv:git-hooks:install" ];
+      exec = "echo setup-pre-hooks";
     };
   };
 }
